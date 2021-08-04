@@ -11,7 +11,7 @@ connectDataBase();
 
 const seedProducts = async() => {
     try {
-
+        
     await Product.deleteMany();
     console.log('Products are deleted');
 
