@@ -26,11 +26,11 @@ const productSchema = new mongoose.Schema({
                 // Storing images in an array within cloud array storage using id and url
                 public_id: {
                     type: String,
-                    required: true
+                    required: false
                 },
                 url: {
                     type: String,
-                    required: true
+                    required: false
                 }
             }
         ],

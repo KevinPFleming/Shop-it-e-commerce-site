@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -23,11 +24,11 @@ const userSchema = new mongoose.Schema({
     avatar: {
         public_id: {
             type: String,
-            required: true
+            required: false
         },
         url: {
             type: String,
-            required: true
+            required: false
         }
     },
     role: {
@@ -50,6 +51,18 @@ if(!this.isModified('password')) {
     // the value 10 creates a "Stronger" password value when at least 10 characters are used
     this.password = await bcrypt.hash(this.password, 10)
 })
+
+// Compare User password
+userSchema.methods.comparePassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password)
+}
+
+// Return JWT token 
+userSchema.methods.getJwtToken = function () {
+    return jwt.sign({ id: this._id}, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_TIME
+    });
+}
 
 
 module.exports = mongoose.model('User', userSchema);
