@@ -26,9 +26,35 @@ exports.newOrder = catchAsyncErrors( async (req, res, next) => {
         paidAt: Date.now(),
         user: req.user._id
     })
-    res.send(200).json({
+    res.status(200).json({
         success: true,
         order
     })
 })
+
+// Get Single Order => /api/v1/order/:id
+exports.getSingleOrder = catchAsyncErrors( async(req, res, next) => {
+    const order = await Order.findById(req.params.id).populate('user', 'name email')
+
+    if(!order) {
+        return next(new ErrorHandler('No order found with this ID', 404))
+    }
+
+    res.status(200).json({
+        success: true,
+        order
+    })
+})
+
+// Get Logged In User orders => /api/v1/orders/me
+exports.myOrders = catchAsyncErrors( async(req, res, next) => {
+    const order = await Order.find({ user: req.user.id})
+
+    res.status(200).json({
+        success: true,
+        order
+    })
+})
+
+
 
